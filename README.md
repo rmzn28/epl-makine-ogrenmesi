@@ -100,6 +100,3 @@ epl-makine-ogrenmesi/
 - Accuracy, Precision, Recall, F1-Score
 - MAE, MSE, R² metrikleri
 
-## 📝 Lisans
-
-Bu proje eğitim amaçlı geliştirilmiştir.

@@ -49,7 +49,7 @@ def load_and_clean_data(data_path="Data/*.csv"):
             raise ValueError(f"Kritik sütun eksik: {col}")
             
     # Eksik istatistik sütunlarını 0 ile doldur
-    stat_cols = ['HS', 'AS', 'HST', 'AST', 'HC', 'AC']
+    stat_cols = ['HS', 'AS', 'HST', 'AST', 'HC', 'AC', 'HF', 'AF', 'HY', 'AY', 'HR', 'AR']
     for sc in stat_cols:
         if sc not in df.columns: df[sc] = 0
     
@@ -101,7 +101,9 @@ def feature_engineering(df):
             'Date': date, 'HomeTeam': home_team, 'AwayTeam': away_team, 
             'FTR': ftr, 'FTHG': fthg, 'FTAG': ftag,
             'HS': row['HS'], 'AS': row['AS'], 'HST': row['HST'],
-            'AST': row['AST'], 'HC': row['HC'], 'AC': row['AC']
+            'AST': row['AST'], 'HC': row['HC'], 'AC': row['AC'],
+            'HF': row['HF'], 'AF': row['AF'], 'HY': row['HY'],
+            'AY': row['AY'], 'HR': row['HR'], 'AR': row['AR']
         }
         
         def calculate_rolling_avg(team, stat_name, window_size):
@@ -178,10 +180,13 @@ def train_and_optimize(features_df, team_stats, h2h_stats, team_last_date, raw_d
     stat_targets = {
         'HS': features_df['HS'], 'AS': features_df['AS'],
         'HST': features_df['HST'], 'AST': features_df['AST'],
-        'HC': features_df['HC'], 'AC': features_df['AC']
+        'HC': features_df['HC'], 'AC': features_df['AC'],
+        'HF': features_df['HF'], 'AF': features_df['AF'],
+        'HY': features_df['HY'], 'AY': features_df['AY'],
+        'HR': features_df['HR'], 'AR': features_df['AR']
     }
     
-    cols_to_drop = ['Date', 'FTR', 'FTHG', 'FTAG', 'HS', 'AS', 'HST', 'AST', 'HC', 'AC']
+    cols_to_drop = ['Date', 'FTR', 'FTHG', 'FTAG', 'HS', 'AS', 'HST', 'AST', 'HC', 'AC', 'HF', 'AF', 'HY', 'AY', 'HR', 'AR']
     X_raw = features_df.drop(columns=cols_to_drop)
     
     X = pd.get_dummies(X_raw, columns=['HomeTeam', 'AwayTeam'])
@@ -249,7 +254,9 @@ def train_and_optimize(features_df, team_stats, h2h_stats, team_last_date, raw_d
     ]
     
     stat_labels = {'HS': 'Home Shots', 'AS': 'Away Shots', 'HST': 'Home SoT',
-                   'AST': 'Away SoT', 'HC': 'Home Corners', 'AC': 'Away Corners'}
+                   'AST': 'Away SoT', 'HC': 'Home Corners', 'AC': 'Away Corners',
+                   'HF': 'Home Fouls', 'AF': 'Away Fouls', 'HY': 'Home Yellow',
+                   'AY': 'Away Yellow', 'HR': 'Home Red', 'AR': 'Away Red'}
                    
     for st_col, _ in stat_labels.items():
         if st_col in stat_targets:

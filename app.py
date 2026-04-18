@@ -203,16 +203,16 @@ with tab1:
         st.caption(f"Raw: {pred_hg:.2f} - {pred_ag:.2f}")
 
     # Beklenen Maç İstatistikleri
-    if set(['HC', 'AC', 'HST', 'AST', 'HS', 'AS']).issubset(selected_reg_models.keys()):
+    if set(['HC', 'AC', 'HST', 'AST', 'HS', 'AS', 'HF', 'AF', 'HY', 'AY', 'HR', 'AR']).issubset(selected_reg_models.keys()):
         st.write("---")
         st.subheader(f"📊 Beklenen Maç İstatistikleri ({reg_choice})")
         pred_stats = {}
-        for sk in ['HC', 'AC', 'HST', 'AST', 'HS', 'AS']:
-            pred_stats[sk] = round(float(selected_reg_models[sk].predict(feature_vector)[0]), 1)
+        for sk in ['HC', 'AC', 'HST', 'AST', 'HS', 'AS', 'HF', 'AF', 'HY', 'AY', 'HR', 'AR']:
+            pred_stats[sk] = round(max(0, float(selected_reg_models[sk].predict(feature_vector)[0])), 1)
 
-        categories = ['Korner (Corners)', 'İsabetli Şut (SoT)', 'Toplam Şut (Shots)']
-        home_values = [pred_stats['HC'], pred_stats['HST'], pred_stats['HS']]
-        away_values = [pred_stats['AC'], pred_stats['AST'], pred_stats['AS']]
+        categories = ['Kırmızı Kart (Red Cards)', 'Sarı Kart (Yel. Cards)', 'Faul (Fouls)', 'Korner (Corners)', 'İsabetli Şut (SoT)', 'Toplam Şut (Shots)']
+        home_values = [pred_stats['HR'], pred_stats['HY'], pred_stats['HF'], pred_stats['HC'], pred_stats['HST'], pred_stats['HS']]
+        away_values = [pred_stats['AR'], pred_stats['AY'], pred_stats['AF'], pred_stats['AC'], pred_stats['AST'], pred_stats['AS']]
 
         fig_stats = go.Figure()
         fig_stats.add_trace(go.Bar(
@@ -228,7 +228,7 @@ with tab1:
         fig_stats.update_layout(
             barmode='group', margin=dict(t=10, b=0, l=0, r=40),
             legend=dict(orientation='h', yanchor='bottom', y=1.05, xanchor='right', x=1),
-            yaxis=dict(tickfont=dict(size=13)), height=300
+            yaxis=dict(tickfont=dict(size=13)), height=450
         )
         fig_stats.update_xaxes(title_text='')
         st.plotly_chart(fig_stats, use_container_width=True, config=PLOTLY_CFG)
